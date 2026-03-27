@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÉLITE Ultimate Restaurant</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;transition:0.3s;}
+body{background:#0a0a0a;color:#fff;}
+body.light{background:#f5f5f5;color:#000;}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;padding:20px;background:#000;position:sticky;top:0;z-index:100;}
+nav h1{color:gold;}
+nav button{margin-left:10px;padding:8px;background:gold;border:none;cursor:pointer;}
+
+/* HERO */
+.hero{height:50vh;background:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') center/cover;display:flex;align-items:center;justify-content:center;}
+.hero h2{background:rgba(0,0,0,0.6);padding:20px;border-radius:10px;font-size:2rem;}
+
+/* SECTIONS */
+section{padding:40px;text-align:center;animation:fade 1s ease;}
+h2{margin-bottom:20px;}
+
+/* MENU */
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.card{background:#222;padding:15px;border-radius:10px;transition:0.3s;animation:fade 1s ease;}
+.card img{width:100%;border-radius:10px;}
+.card:hover{transform:scale(1.05);}
+button{margin-top:10px;padding:8px 15px;background:gold;border:none;cursor:pointer;}
+
+/* CART */
+.cart-panel{position:fixed;right:-350px;top:0;width:300px;height:100%;background:#111;padding:20px;transition:0.3s;overflow:auto;z-index:101;}
+.cart-panel.active{right:0;}
+.cart-item{margin:10px 0;border-bottom:1px solid #333;padding-bottom:5px;}
+.qty-btn{padding:3px 8px;margin:0 5px;}
+
+/* PAYMENT MODAL */
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:102;}
+.modal-content{background:#222;padding:20px;border-radius:10px;text-align:center;width:300px;}
+input,textarea{width:90%;padding:10px;margin:10px;}
+
+/* ANIMATION */
+@keyframes fade{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
+
+/* FOOTER */
+footer{background:#000;padding:20px;text-align:center;}
+a{color:#d4af37;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <h1>ÉLITE</h1>
+  <div>
+    <button onclick="toggleMode()">🌙</button>
+    <button onclick="toggleCart()">Cart 🛒</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h2>Ultimate Luxury Dining</h2>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+<h2>About Us</h2>
+<p>Welcome to ÉLITE — where luxury meets taste. Enjoy our finest dishes in a premium environment.</p>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+<h2>Menu</h2>
+<div class="menu">
+  <div class="card"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141"><h3>Steak</h3><p>$25</p><button onclick="addToCart('Steak',25)">Add</button></div>
+  <div class="card"><img src="https://images.unsplash.com/photo-1548365328-5b8490d5b6f0"><h3>Pizza</h3><p>$15</p><button onclick="addToCart('Pizza',15)">Add</button></div>
+  <div class="card"><img src="https://images.unsplash.com/photo-1521389508051-d7ffb5dc8c6f"><h3>Pasta</h3><p>$12</p><button onclick="addToCart('Pasta',12)">Add</button></div>
+  <div class="card"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb"><h3>Dessert</h3><p>$10</p><button onclick="addToCart('Dessert',10)">Add</button></div>
+</div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+<h2>Gallery</h2>
+<div class="menu">
+  <div class="card"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38" alt="Dining 1"></div>
+  <div class="card"><img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d" alt="Dining 2"></div>
+  <div class="card"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" alt="Dining 3"></div>
+</div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+<h2>Reviews</h2>
+<p>"Amazing experience! Food and service are top-notch!" - John D.</p>
+<p>"Best fine dining in town. Highly recommended." - Maria S.</p>
+</section>
+
+<!-- ORDER TABLE FORM -->
+<section id="order">
+<h2>Order Table via WhatsApp</h2>
+<form onsubmit="orderWhatsApp(event)">
+<input type="text" id="orderName" placeholder="Your Name" required><br>
+<input type="tel" id="orderPhone" placeholder="Phone Number" required><br>
+<input type="date" id="orderDate" required><br>
+<input type="time" id="orderTime" required><br>
+<textarea id="orderMsg" placeholder="Message"></textarea><br>
+<button type="submit">Send via WhatsApp</button>
+</form>
+</section>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+<button onclick="toggleCart()">⬅ Back</button>
+<h2>Cart</h2>
+<div id="cart-items"></div>
+<h3>Total: $<span id="total">0</span></h3>
+<button onclick="openPayment()">Checkout</button>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal" id="paymentModal">
+<div class="modal-content">
+<h2>Payment</h2>
+<input placeholder="Card Number">
+<input placeholder="MM/YY">
+<input placeholder="CVV">
+<button onclick="pay()">Pay</button>
+</div>
+</div>
+
+<footer>
+<p>© 2026 ÉLITE Restaurant</p>
+</footer>
+
+<script>
+// Dark/Light mode
+function toggleMode(){document.body.classList.toggle("light");}
+
+// Cart system
+let cart = JSON.parse(localStorage.getItem("cart"))||[];
+function saveCart(){localStorage.setItem("cart", JSON.stringify(cart));}
+function toggleCart(){document.getElementById("cartPanel").classList.toggle("active");}
+function addToCart(name,price){let item=cart.find(i=>i.name===name);if(item){item.qty++;}else{cart.push({name,price,qty:1});}saveCart();updateCart();}
+function changeQty(i,a){cart[i].qty+=a;if(cart[i].qty<=0)cart.splice(i,1);saveCart();updateCart();}
+function updateCart(){let div=document.getElementById("cart-items");div.innerHTML="";let t=0;cart.forEach((item,i)=>{t+=item.price*item.qty;div.innerHTML+=`<div class="cart-item">${item.name} ($${item.price})<br><button onclick="changeQty(${i},-1)">-</button> ${item.qty} <button onclick="changeQty(${i},1)">+</button></div>`});document.getElementById("total").innerText=t;}
+function openPayment(){if(cart.length===0){alert("Cart empty!");return;}document.getElementById("paymentModal").style.display="flex";}
+function pay(){alert("Payment successful!");cart=[];saveCart();updateCart();document.getElementById("paymentModal").style.display="none";}
+updateCart();
+
+// WhatsApp order
+function orderWhatsApp(e){
+  e.preventDefault();
+  let name=document.getElementById("orderName").value;
+  let phone=document.getElementById("orderPhone").value;
+  let date=document.getElementById("orderDate").value;
+  let time=document.getElementById("orderTime").value;
+  let msg=document.getElementById("orderMsg").value;
+  let text=`Order Table\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nMessage: ${msg}`;
+  let url=`https://wa.me/1234567890?text=${encodeURIComponent(text)}`;
+  window.open(url,"_blank");
+}
+</script>
+
+</body>
+</html>
